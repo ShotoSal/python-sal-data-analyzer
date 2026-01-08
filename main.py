@@ -1,3 +1,5 @@
+from datetime import datetime
+
 # Define analyze_numbers(numbers)
 # Return count, min, max, sum, average in a dictionary
 def analyze_numbers(numbers):
@@ -53,6 +55,15 @@ def main():
     # Print the report
     print("Analysis report:")
     print(report)
+
+    # ===== Commit 4: Save report to file =====
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    with open("report.txt", "w") as file:
+        file.write(f"Analysis Report - {timestamp}\n")
+        file.write(str(report))
+
+    print("Report saved to report.txt")
 
 
 # REQUIRED bottom guard
