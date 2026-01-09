@@ -1,3 +1,4 @@
+from storage import save_numbers
 from datetime import datetime
 
 # Define analyze_numbers(numbers)
@@ -55,6 +56,11 @@ def main():
     # Print the report
     print("Analysis report:")
     print(report)
+
+    # Save dataset to JSON
+    save_numbers(numbers)
+    print("Numbers saved to data.json")
+
 
     # ===== Commit 4: Save report to file =====
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
