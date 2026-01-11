@@ -1,43 +1,18 @@
-from storage import save_numbers
-from datetime import datetime
-
-# Define analyze_numbers(numbers)
-# Return count, min, max, sum, average in a dictionary
-def analyze_numbers(numbers):
-    if not numbers:
-        return {
-            "count": 0,
-            "min": None,
-            "max": None,
-            "sum": 0,
-            "average": None
-        }
-
-    return {
-        "count": len(numbers),
-        "min": min(numbers),
-        "max": max(numbers),
-        "sum": sum(numbers),
-        "average": sum(numbers) / len(numbers)
-    }
+from storage import save_numbers, load_numbers, save_report
+from analyzer import analyze_numbers, print_report
 
 
-def main():
-    print("Python CLI Data Analyzer")
-
-    # Ask the user how many numbers to enter
+def collect_numbers():
     try:
         count = int(input("How many numbers would you like to enter? "))
         if count <= 0:
             print("Please enter a positive number.")
-            return
+            return []
     except ValueError:
-        print("Invalid input. Please enter a valid number.")
-        return
+        print("Invalid input.")
+        return []
 
     numbers = []
-
-    # Loop to collect inputs
     for i in range(count):
         while True:
             try:
@@ -45,33 +20,62 @@ def main():
                 numbers.append(num)
                 break
             except ValueError:
-                print("Invalid input. Please enter a valid number.")
+                print("Invalid number.")
 
-    # Print the list
-    print("You entered the following numbers:", numbers)
-
-    # Call the analysis function
-    report = analyze_numbers(numbers)
-
-    # Print the report
-    print("Analysis report:")
-    print(report)
-
-    # Save dataset to JSON
-    save_numbers(numbers)
-    print("Numbers saved to data.json")
+    return numbers
 
 
-    # ===== Commit 4: Save report to file =====
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+def main():
+    numbers = []
+    last_results = None
 
-    with open("report.txt", "w") as file:
-        file.write(f"Analysis Report - {timestamp}\n")
-        file.write(str(report))
+    print("Python CLI Data Analyzer")
 
-    print("Report saved to report.txt")
+    while True:
+        print("\nMenu:")
+        print("1) Enter numbers")
+        print("2) Save numbers to JSON")
+        print("3) Load numbers from JSON")
+        print("4) Analyze current numbers")
+        print("5) Save analysis report to file")
+        print("6) Exit")
+
+        choice = input("Enter your choice: ").strip()
+
+        if choice == "1":
+            numbers = collect_numbers()
+            last_results = None
+
+        elif choice == "2":
+            save_numbers(numbers)
+            print("Numbers saved to data.json")
+
+        elif choice == "3":
+            numbers = load_numbers()
+            last_results = None
+            if numbers:
+                print("Numbers loaded:", numbers)
+            else:
+                print("No saved data found.")
+
+        elif choice == "4":
+            last_results = analyze_numbers(numbers)
+            print_report(last_results)
+
+        elif choice == "5":
+            if last_results is None:
+                print("No analysis available. Run option 4 first.")
+            else:
+                save_report(last_results)
+                print("Analysis saved to analysis.txt")
+
+        elif choice == "6":
+            print("Exiting program.")
+            break
+
+        else:
+            print("Invalid choice. Please select 1–6.")
 
 
-# REQUIRED bottom guard
 if __name__ == "__main__":
     main()
