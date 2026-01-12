@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Python Data Analyzer</h1>
+
+    <p>Enter numbers separated by commas (example: 1, 2, 3, 4)</p>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="post" action="/analyze">
+        <input type="text" name="numbers" placeholder="Enter numbers">
+        <br><br>
+        <button type="submit">Analyze</button>
+        <button type="reset">Clear</button>
+    </form>
+</body>
+</html>
