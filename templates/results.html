@@ -5,16 +5,52 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>Analysis Results</h1>
 
-    <ul>
-        <li>Count: {{ results.count }}</li>
-        <li>Minimum: {{ results.min }}</li>
-        <li>Maximum: {{ results.max }}</li>
-        <li>Sum: {{ results.sum }}</li>
-        <li>Average: {{ results.average }}</li>
-    </ul>
+<h1>Analysis Results</h1>
 
-    <a href="/">Back</a>
+<div class="box">
+    <h2>Numbers Entered</h2>
+    {% if numbers %}
+        <p class="numbers">{{ numbers }}</p>
+    {% else %}
+        <p class="muted">No numbers were provided.</p>
+    {% endif %}
+</div>
+
+<div class="box">
+    <h2>Summary</h2>
+
+    <div class="stats-grid">
+        <div class="stat">
+            <div class="label">Count</div>
+            <div class="value">{{ results.count }}</div>
+        </div>
+
+        <div class="stat">
+            <div class="label">Sum</div>
+            <div class="value">{{ results.sum }}</div>
+        </div>
+
+        <div class="stat">
+            <div class="label">Average</div>
+            <div class="value">{{ results.average }}</div>
+        </div>
+
+        <div class="stat">
+            <div class="label">Minimum</div>
+            <div class="value">{{ results.min }}</div>
+        </div>
+
+        <div class="stat">
+            <div class="label">Maximum</div>
+            <div class="value">{{ results.max }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="box">
+    <a class="link-btn" href="/">Analyze another set</a>
+</div>
+
 </body>
 </html>
