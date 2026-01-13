@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from analyzer import analyze_numbers
+from external_api import fetch_hourly_temperature
 
 app = Flask(__name__)
 
@@ -37,6 +38,12 @@ def analyze():
         results=results,
         numbers=numbers
     )
+
+# --- Lecture 7 Commit 2 test route ---
+@app.route("/test-weather")
+def test_weather():
+    times, temperatures = fetch_hourly_temperature(40.7128, -74.0060)
+    return jsonify(times=times, temperatures=temperatures)
 
 if __name__ == "__main__":
     app.run(debug=True)
