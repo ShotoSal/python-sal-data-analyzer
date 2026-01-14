@@ -53,7 +53,14 @@ def test_weather():
 @app.route("/analyze-weather")
 def analyze_weather():
     times, temperatures = fetch_hourly_temperature(40.7128, -74.0060)
-    results = analyze_time_series(times, temperatures)
+    analysis = analyze_time_series(times, temperatures)
+
+    return render_template(
+        "weather_analysis_results.html",
+        times=times,
+        temperatures=temperatures,
+        analysis=analysis
+    )
 
     # Temporary test output (JSON) to verify stats
     return jsonify(results=results)
