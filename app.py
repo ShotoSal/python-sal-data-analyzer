@@ -5,11 +5,17 @@ from weather_analysis import analyze_time_series
 
 app = Flask(__name__)
 
+# -------------------------------
+# Home page
+# -------------------------------
 @app.route("/", methods=["GET"])
 def index():
     name = "Salman"
     return render_template("index.html", name=name)
 
+# -------------------------------
+# Number analyzer (existing)
+# -------------------------------
 @app.route("/analyze", methods=["POST"])
 def analyze():
     raw = request.form.get("numbers")
@@ -22,7 +28,6 @@ def analyze():
         )
 
     try:
-        # Allow commas or spaces
         parts = raw.replace(",", " ").split()
         numbers = [float(x) for x in parts]
     except ValueError:
@@ -40,30 +45,58 @@ def analyze():
         numbers=numbers
     )
 
-# --- Lecture 7 Commit 3 template route ---
-@app.route("/test-weather")
-def test_weather():
-    times, temperatures = fetch_hourly_temperature(40.7128, -74.0060)
-    return render_template(
-        "weather_analysis_results.html",
-        times=times,
-        temperatures=temperatures
-    )
+# -------------------------------
+# Commit #6: Weather input page
+# -------------------------------
+@app.route("/weather-input")
+def weather_input():
+    return render_template("weather_input.html")
 
-@app.route("/analyze-weather")
+# -------------------------------
+# Commit #6: Analyze weather (POST)
+# -------------------------------
+@app.route("/analyze-weather", methods=["POST"])
 def analyze_weather():
-    times, temperatures = fetch_hourly_temperature(40.7128, -74.0060)
+    try:
+        lat = float(request.form.get("lat"))
+        lon = float(request.form.get("lon"))
+    except (TypeError, ValueError):
+        return render_template(
+            "weather_input.html",
+            error="Invalid latitude or longitude. Please enter numeric values."
+        )
+
+    times, temperatures = fetch_hourly_temperature(lat, lon)
     analysis = analyze_time_series(times, temperatures)
 
     return render_template(
         "weather_analysis_results.html",
         times=times,
         temperatures=temperatures,
-        analysis=analysis
+        analysis=analysis,
+        location_name="Custom Location",
+        lat=lat,
+        lon=lon
     )
 
-    # Temporary test output (JSON) to verify stats
-    return jsonify(results=results)
+# -------------------------------
+# Optional JSON debug endpoint
+# -------------------------------
+@app.route("/analyze-weather.json")
+def analyze_weather_json():
+    times, temperatures = fetch_hourly_temperature(40.7128, -74.0060)
+    analysis = analyze_time_series(times, temperatures)
+    return jsonify(
+        count=analysis["count"],
+        min=analysis["min"],
+        max=analysis["max"],
+        mean=analysis["mean"],
+        median=analysis["median"],
+        std_dev=analysis["std_dev"]
+    )
 
+# -------------------------------
+# Run app
+# -------------------------------
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
